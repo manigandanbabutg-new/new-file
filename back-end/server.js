@@ -30,7 +30,7 @@ app.post("/generate", async (req, res) => {
         }
 
         const response = await fetch(
-            "https://router.huggingface.co/hf-inference/models/google/flan-t5-base",
+            "https://api-inference.huggingface.co/models/distilgpt2",
             {
                 method: "POST",
                 headers: {
