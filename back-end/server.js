@@ -8,43 +8,62 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/generate", async (req,res)=>{
+/* Home Route */
+app.get("/", (req, res) => {
+    res.send("Backend Running Successfully 🚀");
+});
 
-    try{
+/* Test Route */
+app.get("/generate", (req, res) => {
+    res.send("Generate Endpoint Ready");
+});
+
+/* AI Route */
+app.post("/generate", async (req, res) => {
+
+    try {
+
+        if (!req.body.prompt) {
+            return res.status(400).json({
+                error: "Prompt is required"
+            });
+        }
 
         const response = await fetch(
             "https://router.huggingface.co/hf-inference/models/google/flan-t5-base",
             {
-                method:"POST",
-                headers:{
-                    Authorization:
-                    `Bearer ${process.env.HF_TOKEN}`,
-                    "Content-Type":"application/json"
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${process.env.HF_TOKEN}`,
+                    "Content-Type": "application/json"
                 },
-                body:JSON.stringify({
-                    inputs:req.body.prompt
+                body: JSON.stringify({
+                    inputs: req.body.prompt
                 })
             }
         );
 
-        const result =
-        await response.json();
+        const result = await response.json();
 
         res.json({
-            output: result[0]?.generated_text
-                     || JSON.stringify(result)
+            output:
+                result[0]?.generated_text ||
+                JSON.stringify(result)
         });
 
-    }catch(error){
+    } catch (error) {
+
+        console.error(error);
 
         res.status(500).json({
-            error:error.message
+            error: error.message
         });
-
     }
-
 });
 
-app.listen(3000,()=>{
-    console.log("Server Running");
+/* Render Port */
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`Server Running on Port ${PORT}`);
 });
