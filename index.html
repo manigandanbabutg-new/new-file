@@ -1,103 +1,335 @@
+
 <!DOCTYPE html>
+<html lang="en">
 
-<html>
 <head>
-    <title>AI Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
+<title>AI Generator Pro</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
 <style>
-    body{
-        font-family: Arial, sans-serif;
-        padding:20px;
-        max-width:800px;
-        margin:auto;
-    }
 
-    textarea{
-        width:100%;
-        height:150px;
-        padding:10px;
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,sans-serif;
+}
 
-    button{
-        margin-top:10px;
-        padding:10px 20px;
-        cursor:pointer;
-    }
+body{
+min-height:100vh;
+overflow-x:hidden;
+background:
+linear-gradient(
+135deg,
+#4f00ff,
+#7000ff,
+#4c1d95,
+#2563eb
+);
+display:flex;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
 
-    #result{
-        margin-top:20px;
-        border:1px solid #ddd;
-        padding:15px;
-        min-height:50px;
-    }
+/* Background Orbs */
+
+.orb{
+position:fixed;
+border-radius:50%;
+filter:blur(120px);
+z-index:-1;
+animation:float 10s infinite ease-in-out;
+}
+
+.orb1{
+width:400px;
+height:400px;
+background:#ff00ff;
+top:-100px;
+left:-100px;
+}
+
+.orb2{
+width:500px;
+height:500px;
+background:#00ffff;
+right:-150px;
+top:20%;
+}
+
+.orb3{
+width:350px;
+height:350px;
+background:#7c3aed;
+bottom:-100px;
+left:35%;
+}
+
+@keyframes float{
+50%{
+transform:translateY(-30px);
+}
+}
+
+/* Glass */
+
+.glass{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,0.15);
+
+box-shadow:
+0 8px 32px rgba(0,0,0,.25);
+}
+
+/* Card */
+
+.main-card{
+width:100%;
+max-width:1000px;
+padding:40px;
+border-radius:35px;
+color:white;
+transition:.3s;
+transform-style:preserve-3d;
+}
+
+.main-card:hover{
+transform:
+perspective(1000px)
+rotateX(2deg)
+rotateY(-2deg);
+}
+
+.heading{
+font-size:3rem;
+font-weight:700;
+text-align:center;
+margin-bottom:10px;
+}
+
+.sub-heading{
+text-align:center;
+opacity:.8;
+margin-bottom:30px;
+}
+
+/* Textarea */
+
+textarea{
+width:100%;
+height:220px;
+padding:20px;
+border:none;
+outline:none;
+resize:none;
+border-radius:25px;
+
+background:
+rgba(255,255,255,0.08);
+
+color:white;
+font-size:16px;
+}
+
+textarea::placeholder{
+color:rgba(255,255,255,.7);
+}
+
+/* Button */
+
+.generate-btn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+margin-top:20px;
+
+background:
+linear-gradient(
+90deg,
+#7c3aed,
+#3b82f6
+);
+
+color:white;
+font-size:18px;
+font-weight:600;
+
+transition:.3s;
+}
+
+.generate-btn:hover{
+transform:
+translateY(-5px)
+scale(1.02);
+
+box-shadow:
+0 15px 30px rgba(0,0,0,.3);
+}
+
+/* Result */
+
+.result-box{
+margin-top:25px;
+padding:25px;
+border-radius:25px;
+min-height:180px;
+white-space:pre-wrap;
+line-height:1.8;
+
+background:
+rgba(255,255,255,0.08);
+}
+
+.result-title{
+font-size:22px;
+font-weight:600;
+margin-bottom:15px;
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.heading{
+font-size:2rem;
+}
+
+.main-card{
+padding:25px;
+}
+
+textarea{
+height:180px;
+}
+
+}
+
 </style>
-```
-
 </head>
+
 <body>
 
-```
-<h2>AI Text Generator</h2>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<div class="glass main-card">
+
+<h1 class="heading">
+🤖 AI Generator
+</h1>
+
+<p class="sub-heading">
+Generate content instantly using AI
+</p>
 
 <textarea
-    id="prompt"
-    placeholder="Enter your prompt">
+id="prompt"
+placeholder="Type your prompt here...">
 </textarea>
 
-<br>
+<button
+class="generate-btn"
+onclick="generateText()">
 
-<button onclick="generateText()">
-    Generate
+<i class="fa-solid fa-wand-magic-sparkles"></i>
+ Generate AI Response
+
 </button>
 
-<div id="result"></div>
+<div
+id="result"
+class="result-box">
+
+<div class="result-title">
+AI Response
+</div>
+
+Waiting for your prompt...
+
+</div>
+
+</div>
 
 <script>
 
-    async function generateText(){
+async function generateText(){
 
-        const prompt =
-        document.getElementById("prompt").value;
+const prompt =
+document.getElementById("prompt").value;
 
-        if(!prompt){
-            alert("Please enter a prompt");
-            return;
-        }
+if(!prompt){
 
-        document.getElementById("result")
-        .innerHTML = "Generating...";
+alert("Please enter a prompt");
+return;
 
-        try{
+}
 
-            const response = await fetch(
-                "https://new-file-67ps.onrender.com/generate",
-                {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body:JSON.stringify({
-                        prompt:prompt
-                    })
-                }
-            );
+const result =
+document.getElementById("result");
 
-            const data = await response.json();
+result.innerHTML = `
+<div class="result-title">
+AI Response
+</div>
+Generating...
+`;
 
-            document.getElementById("result")
-            .innerHTML = data.output || data.error;
+try{
 
-        }catch(error){
+const response = await fetch(
+"https://new-file-67ps.onrender.com/generate",
+{
+method:"POST",
 
-            document.getElementById("result")
-            .innerHTML =
-            "Error: " + error.message;
-        }
-    }
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+prompt:prompt
+})
+
+}
+);
+
+const data = await response.json();
+
+result.innerHTML = `
+<div class="result-title">
+AI Response
+</div>
+${data.output || data.error}
+`;
+
+}
+catch(error){
+
+result.innerHTML = `
+<div class="result-title">
+Error
+</div>
+${error.message}
+`;
+
+}
+
+}
 
 </script>
-```
 
 </body>
 </html>
